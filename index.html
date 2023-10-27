@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.24/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","pollster-ratings.csv","raw-polls.csv"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1517,9 +1517,67 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<h2 id="project-thoughts">Project thoughts</h2>
-<p>I am interested in exploring data related to the Obama/Biden Administrations clean energy policies</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>s</p>
+<p>##I Project thoughts</p>
+<p>I am interested in exploring data related to the midterm elections of 2020, 2018, and 2016 elections to try and see what the accuracy of the elections was based on different polling organizations, the way the interview was conducted and I also want to evaluate whether or not incumbency matters. 538 offers analysis of all the major polling organizations and whether or not they have done an unbiased job in their analysis, which is stored in the mediabias dataset.
+I hypthesize that the data will be most accurate in terms of predicting a winner for incumbents. I also predict that polling firms with higher grades from 538 will be more accurate and that partisan polling firmns willk be more accurate.
+My outcome variable, or tbhe variable on ym y axis will be the error column. If the absolte values are higher, that means that the polls prediction is farer away from the actual outcome and the opposite is true for lower values.
+An observed pattern woulkd be the “rightcall” column variable in the Rawpolls dataset and the “bias” column in the Rawpolls dataset. I could group by rightcall for right and wrong and see how tha was affected by the bias variable. For the ‘mediabias’ dataset I could use the “Races called correctly”, which measures what percentage of the races did they call correctly. I could filter this to races that are within 10 points on the</p>
+<p>library(housing)</p>
+library
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span>
+<span><span class='va'>Rawpolls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"raw-polls.csv"</span><span class='op'>)</span></span>
+<span><span class='va'>mediabias</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"pollster-ratings.csv"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>Rawpolls</span></span></code></pre>
+</div>
+<pre><code># A tibble: 9,559 × 29
+   poll_id question_id race_id  year race         location type_simple
+     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;      
+ 1   54373       87909    1455  1998 1998_Gov-G_… NY       Gov-G      
+ 2   26255       87926    1456  1998 1998_Gov-G_… OH       Gov-G      
+ 3   26026       31266    1736  1998 1998_Sen-G_… NV       Sen-G      
+ 4   26013       31253    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 5   63632      117103    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 6   26255       31495    1741  1998 1998_Sen-G_… OH       Sen-G      
+ 7   64053      117875    1966  1998 1998_House-… ID-1     House-G    
+ 8   64053      117876    1967  1998 1998_House-… ID-2     House-G    
+ 9   28268       33546    8661  1998 1998_House-… US       House-G    
+10   28267       33545    8661  1998 1998_House-… US       House-G    
+# ℹ 9,549 more rows
+# ℹ 22 more variables: type_detail &lt;chr&gt;, pollster &lt;chr&gt;,
+#   pollster_rating_id &lt;dbl&gt;, polldate &lt;chr&gt;, samplesize &lt;dbl&gt;,
+#   cand1_name &lt;chr&gt;, cand1_party &lt;chr&gt;, cand1_pct &lt;dbl&gt;,
+#   cand2_name &lt;chr&gt;, cand2_party &lt;chr&gt;, cand2_pct &lt;dbl&gt;,
+#   cand3_pct &lt;dbl&gt;, margin_poll &lt;dbl&gt;, electiondate &lt;chr&gt;,
+#   cand1_actual &lt;dbl&gt;, cand2_actual &lt;dbl&gt;, margin_actual &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>mediabias</span></span></code></pre>
+</div>
+<pre><code># A tibble: 453 × 23
+   Pollster   `Pollster Rating ID` `# of Polls` `NCPP / AAPOR / Roper`
+   &lt;chr&gt;                     &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;                 
+ 1 Monmouth …                  215          108 yes                   
+ 2 Selzer &amp; …                  304           48 yes                   
+ 3 ABC News/…                    3           73 yes                   
+ 4 Siena Col…                  448           59 yes                   
+ 5 Field Res…                   94           25 yes                   
+ 6 Marquette…                  195           12 yes                   
+ 7 Muhlenber…                  219           29 yes                   
+ 8 Marist Co…                  183          183 yes                   
+ 9 Data Orbi…                   73            9 yes                   
+10 National …                  224           12 yes                   
+# ℹ 443 more rows
+# ℹ 19 more variables: `Live Caller With Cellphones` &lt;chr&gt;,
+#   Methodology &lt;chr&gt;, `Banned by 538` &lt;chr&gt;,
+#   `Predictive    Plus-Minus` &lt;dbl&gt;, `538 Grade` &lt;chr&gt;,
+#   `Mean-Reverted Bias` &lt;chr&gt;, `Races Called Correctly` &lt;chr&gt;,
+#   `Misses Outside MOE` &lt;chr&gt;, `Simple Average Error` &lt;dbl&gt;,
+#   `Simple Expected Error` &lt;dbl&gt;, `Simple Plus-Minus` &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
