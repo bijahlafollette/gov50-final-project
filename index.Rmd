@@ -9,21 +9,32 @@ output:
 
 
 
-## Project thoughts
+##I Project thoughts
 
-I am interested in exploring data related to the Obama/Biden Administrations clean energy policies
+I am interested in exploring data related to the midterm elections of 2020, 2018, and 2016 elections to try and see what the accuracy of the elections was based on different polling organizations, the way the interview was conducted and I also want to evaluate whether or not incumbency matters. 538 offers analysis of all the major polling organizations and whether or not they have done an unbiased job in their analysis, which is stored in the mediabias dataset. 
+    I hypthesize that the data will be most accurate in terms of predicting a winner for incumbents. I also predict that polling firms with higher grades from 538 will be more accurate and that partisan polling firmns willk be more accurate. 
+    My outcome variable, or tbhe variable on ym y axis will be the error column. If the absolte values are higher, that means that the polls prediction is farer away from the actual outcome and the opposite is true for lower values. 
+    An observed pattern woulkd be the "rightcall" column variable in the Rawpolls dataset and the "bias" column in the Rawpolls dataset. I could group by rightcall for right and wrong and see how tha was affected by the bias variable. For the 'mediabias' dataset I could use the "Races called correctly", which measures what percentage of the races did they call correctly. I could filter this to races that are within 10 points on the 
+    
 
 library(housing)
 
+
+
+library
+```{r}
 library(tidyverse)
-library(dplyr)
-library(ggplot2)
+Rawpolls <- read_csv("raw-polls.csv")
+mediabias <- read_csv("pollster-ratings.csv")
 
-install.packages("readxl")
-library("readxl")
+Rawpolls
+mediabias
 
-uber <- read_excel("Aggregate FHV Data")
 
-uber <- read_excel("uberdata.xlsx")
+         
+
+
+
+```
 
 
