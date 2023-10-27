@@ -12,3 +12,18 @@ output:
 ## Project thoughts
 
 I am interested in exploring data related to the Obama/Biden Administrations clean energy policies
+
+library(housing)
+
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+install.packages("readxl")
+library("readxl")
+
+uber <- read_excel("Aggregate FHV Data")
+
+uber <- read_excel("uberdata.xlsx")
+
+
