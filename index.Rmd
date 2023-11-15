@@ -104,7 +104,7 @@ bias2018 <- Rawpolls |>
   labs(title = "2018", x = "Poll Error", y = "Count of Polls")
 bias2018
   
-
+.
 
 
 Rawpolls <- Rawpolls %>%
