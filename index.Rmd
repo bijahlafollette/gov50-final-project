@@ -44,25 +44,91 @@ finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
 ```
 
 ```{r}
+library(ggplot2)
+library(infer)
+library(tidyverse)
+Rawpolls <- read_csv("raw-polls.csv")
+mediabias <- read_csv("pollster-ratings.csv")
 
-#finance <- finance[, !grepl("^\\.\\.\\.[0-9]{2,4}$", colnames(finance))]
-finance
-#dataset <- dataset[, -c(14:2011)]
-#finance <- finance |>
-  select(-...14 - ...1005)
+ Rawpolls <- Rawpolls |>
+    mutate(bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
+    partisanerror_size = case_when(
+      bias > 0 & bias < 3 ~ "leftlean",
+      bias >= 3 & bias <= 7 ~ "moderateleft",
+      bias > 7 ~ "hardleft",
+      bias > -3 & bias < 0 ~ "leanright",
+      bias <= -3 & bias >= -7 ~ "moderateright",
+      bias < -7 ~ "hardright",  # Added missing operator (<) to compare bias with -7
+      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
+    )
+  )
+           
+Rawpolls
+# Statistical bias of the poll. This is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias 
+           
 
-finance <-
-  mutate(rule_of_40 = if_else(as.numeric(gsub("%", "", Efficiency)) > 40, "Attractive", "na"))
+
+
+Rawpolls
   
-finance <- finance |>
-  rename(Market_cap = `market_cap`)
+biastotal <- Rawpolls |>
+  filter(year %in% c(2016, 2018, 2020, 2022)) %>%
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  labs(x = "Poll Error", y = "Count of Polls")
 
-finance
+bias2016 <- Rawpolls |>
+  filter(year == 2016) |>
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  labs(title = "2016", x = "Poll Error", y = "Count of Polls")
+bias2016
 
-finance <- finance |>
-  mutate(Market_Cap_Category = if_else(Market_cap >= 1 & Market_cap <= 1000000, "Mid cap", "small"))
+bias2018 <- Rawpolls |>
+  filter(year == 2018) |>
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  geom_vline(xintercept = mean(Rawpolls$bias)) +
+  labs(title = "2018", x = "Poll Error", y = "Count of Polls")
+bias2018
   
-finance
+
+
+
+Rawpolls <- Rawpolls %>%
+  mutate(
+    bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
+    partisanerror_size = case_when(
+      bias > 0 & bias < 3 ~ "leftlean",
+      bias >= 3 & bias <= 7 ~ "moderateleft_bias",
+      bias > 7 ~ "hardbias_left",
+      bias > -3 & bias < 0 ~ "leanright",
+      bias <= -3 & bias >= -7 ~ "moderateright_bias",
+      bias < -7 ~ "hardbias_right",  # Added missing operator (<) to compare bias with -7
+      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
+    )
+  )
+
+Rawpolls |>
+  select(bias, partisanerror_size)
+  
+mediabias
+
+##finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
+#finance
+
 ```
 
 

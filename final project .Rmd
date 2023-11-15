@@ -27,14 +27,25 @@ library(tidyverse)
 Rawpolls <- read_csv("raw-polls.csv")
 mediabias <- read_csv("pollster-ratings.csv")
 
-Rawpolls <- Rawpolls |>
-  mutate(bias_direction = if_else(bias >= 0, "left_bias", "right_bias"))
-
-       #  error_size = case_when(bias < 3 ~ "leanleft", bias >= 3 ))
+ Rawpolls |>
+    mutate(bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
+    partisanerror_size = case_when(
+      bias > 0 & bias < 3 ~ "leftlean",
+      bias >= 3 & bias <= 7 ~ "moderateleft",
+      bias > 7 ~ "hardleft",
+      bias > -3 & bias < 0 ~ "leanright",
+      bias <= -3 & bias >= -7 ~ "moderateright",
+      bias < -7 ~ "hardright",  # Added missing operator (<) to compare bias with -7
+      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
+    )
+  )
            
 Rawpolls
 # Statistical bias of the poll. This is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias 
            
+
+
+
 Rawpolls
   
 biastotal <- Rawpolls |>
@@ -73,9 +84,22 @@ bias2018
 
 
 
+Rawpolls <- Rawpolls %>%
+  mutate(
+    bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
+    partisanerror_size = case_when(
+      bias > 0 & bias < 3 ~ "leftlean",
+      bias >= 3 & bias <= 7 ~ "moderateleft_bias",
+      bias > 7 ~ "hardbias_left",
+      bias > -3 & bias < 0 ~ "leanright",
+      bias <= -3 & bias >= -7 ~ "moderateright_bias",
+      bias < -7 ~ "hardbias_right",  # Added missing operator (<) to compare bias with -7
+      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
+    )
+  )
 
-
-
+Rawpolls |>
+  select(bias, partisanerror_size)
   
 mediabias
 
