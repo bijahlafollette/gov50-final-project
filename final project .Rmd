@@ -81,11 +81,6 @@ mediabias
 
 ##finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
 #finance
-
-         
-
-
-
 ```
 
 
