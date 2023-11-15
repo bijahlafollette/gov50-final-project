@@ -28,13 +28,41 @@ Rawpolls <- read_csv("raw-polls.csv")
 mediabias <- read_csv("pollster-ratings.csv")
 
 Rawpolls
+Rawpolls |>
+  filter(year == 2016|year ==2018|year == 2020|year == 2022) |>
+  group_by(pollster, location) |>
+  summarise(pollerror = mean(error))
+  
 mediabias
 
+finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
 
          
 
 
 
+```
+
+```{r}
+
+#finance <- finance[, !grepl("^\\.\\.\\.[0-9]{2,4}$", colnames(finance))]
+finance
+#dataset <- dataset[, -c(14:2011)]
+#finance <- finance |>
+  select(-...14 - ...1005)
+
+finance <-
+  mutate(rule_of_40 = if_else(as.numeric(gsub("%", "", Efficiency)) > 40, "Attractive", "na"))
+  
+finance <- finance |>
+  rename(Market_cap = `market_cap`)
+
+finance
+
+finance <- finance |>
+  mutate(Market_Cap_Category = if_else(Market_cap >= 1 & Market_cap <= 1000000, "Mid cap", "small"))
+  
+finance
 ```
 
 

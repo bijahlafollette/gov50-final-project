@@ -1,0 +1,107 @@
+---
+title: "Gov 50 Final Project"
+author: "Bijah LaFollette"
+description: "My final project"
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+s
+
+##I Project thoughts
+
+I am interested in exploring data related to the midterm elections of 2020, 2018, and 2016 elections to try and see what the accuracy of the elections was based on different polling organizations, the way the interview was conducted and I also want to evaluate whether or not incumbency matters. 538 offers analysis of all the major polling organizations and whether or not they have done an unbiased job in their analysis, which is stored in the mediabias dataset. 
+    I hypthesize that the data will be most accurate in terms of predicting a winner for incumbents. I also predict that polling firms with higher grades from 538 will be more accurate and that partisan polling firmns willk be more accurate. 
+    My outcome variable, or tbhe variable on ym y axis will be the error column. If the absolte values are higher, that means that the polls prediction is farer away from the actual outcome and the opposite is true for lower values. 
+    An observed pattern woulkd be the "rightcall" column variable in the Rawpolls dataset and the "bias" column in the Rawpolls dataset. I could group by rightcall for right and wrong and see how tha was affected by the bias variable. For the 'mediabias' dataset I could use the "Races called correctly", which measures what percentage of the races did they call correctly. I could filter this to races that are within 10 points on the 
+    
+
+library(housing)
+
+
+
+library
+```{r}
+library(tidyverse)
+Rawpolls <- read_csv("raw-polls.csv")
+mediabias <- read_csv("pollster-ratings.csv")
+
+Rawpolls <- Rawpolls |>
+  mutate(bias_direction = if_else(bias >= 0, "left_bias", "right_bias"))
+
+       #  error_size = case_when(bias < 3 ~ "leanleft", bias >= 3 ))
+           
+Rawpolls
+# Statistical bias of the poll. This is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias 
+           
+Rawpolls
+  
+biastotal <- Rawpolls |>
+  filter(year %in% c(2016, 2018, 2020, 2022)) %>%
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  labs(x = "Poll Error", y = "Count of Polls")
+
+bias2016 <- Rawpolls |>
+  filter(year == 2016) |>
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  labs(title = "2016", x = "Poll Error", y = "Count of Polls")
+bias2016
+
+bias2018 <- Rawpolls |>
+  filter(year == 2018) |>
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  geom_vline(xintercept = mean(Rawpolls$bias)) +
+  labs(title = "2018", x = "Poll Error", y = "Count of Polls")
+bias2018
+  
+
+
+
+
+
+
+  
+mediabias
+
+##finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
+#finance
+
+         
+
+
+
+```
+
+
+
+
+
+
+
+```{r}
+
+
+         
+                             
+                                         
+                                         
+                            
+```
+
+
