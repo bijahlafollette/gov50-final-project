@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.24/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","pollster-ratings.csv","raw-polls.csv"]}
+  {"type":"character","attributes":{},"value":["BVP-Nasdaq-Emerging-Cloud-Index (2).csv","BVP-Nasdaq-Emerging-Cloud-Index (2).xlsx","final-project-_files/anchor-4.2.2/anchor.min.js","final-project-_files/bowser-1.9.3/bowser.min.js","final-project-_files/distill-2.2.21/template.v2.js","final-project-_files/figure-html5/unnamed-chunk-1-1.png","final-project-_files/figure-html5/unnamed-chunk-1-2.png","final-project-_files/header-attrs-2.24/header-attrs.js","final-project-_files/jquery-3.6.0/jquery-3.6.0.js","final-project-_files/jquery-3.6.0/jquery-3.6.0.min.js","final-project-_files/jquery-3.6.0/jquery-3.6.0.min.map","final-project-_files/popper-2.6.0/popper.min.js","final-project-_files/tippy-6.2.7/tippy-bundle.umd.min.js","final-project-_files/tippy-6.2.7/tippy-light-border.css","final-project-_files/tippy-6.2.7/tippy.css","final-project-_files/tippy-6.2.7/tippy.umd.min.js","final-project-_files/webcomponents-2.0.0/webcomponents.js","final-project-.html","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-2-1.png","index_files/figure-html5/unnamed-chunk-2-2.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.24/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js","pollster-ratings.csv","raw-polls.csv"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1554,6 +1554,27 @@ library
 #   cand3_pct &lt;dbl&gt;, margin_poll &lt;dbl&gt;, electiondate &lt;chr&gt;,
 #   cand1_actual &lt;dbl&gt;, cand2_actual &lt;dbl&gt;, margin_actual &lt;dbl&gt;, …</code></pre>
 <div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>==</span> <span class='fl'>2016</span><span class='op'>|</span><span class='va'>year</span> <span class='op'>==</span><span class='fl'>2018</span><span class='op'>|</span><span class='va'>year</span> <span class='op'>==</span> <span class='fl'>2020</span><span class='op'>|</span><span class='va'>year</span> <span class='op'>==</span> <span class='fl'>2022</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>pollster</span>, <span class='va'>location</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>pollerror <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>error</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 891 × 3
+# Groups:   pollster [215]
+   pollster                     location pollerror
+   &lt;chr&gt;                        &lt;chr&gt;        &lt;dbl&gt;
+ 1 1892 Polling                 FL            0.61
+ 2 20/20 Insight                GA            5.39
+ 3 ABC News/The Washington Post US            1.74
+ 4 ABC News/The Washington Post VA            0.68
+ 5 ABC News/The Washington Post VA-10         1   
+ 6 ALG Research                 FL-27         4   
+ 7 ALG Research                 MI            0.93
+ 8 Abt Associates               GA            2.17
+ 9 Alaska Survey Research       AK            4.63
+10 Alaska Survey Research       AK-1          7.58
+# ℹ 881 more rows</code></pre>
+<div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>mediabias</span></span></code></pre>
 </div>
 <pre><code># A tibble: 453 × 23
@@ -1576,8 +1597,179 @@ library
 #   `Mean-Reverted Bias` &lt;chr&gt;, `Races Called Correctly` &lt;chr&gt;,
 #   `Misses Outside MOE` &lt;chr&gt;, `Simple Average Error` &lt;dbl&gt;,
 #   `Simple Expected Error` &lt;dbl&gt;, `Simple Plus-Minus` &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>finance</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"BVP-Nasdaq-Emerging-Cloud-Index (2).csv"</span><span class='op'>)</span></span></code></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/infer'>infer</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span>
+<span><span class='va'>Rawpolls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"raw-polls.csv"</span><span class='op'>)</span></span>
+<span><span class='va'>mediabias</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"pollster-ratings.csv"</span><span class='op'>)</span></span>
+<span></span>
+<span> <span class='va'>Rawpolls</span> <span class='op'>&lt;-</span> <span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>bias_direction <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='fl'>0</span>, <span class='st'>"left_bias"</span>, <span class='st'>"right_bias"</span><span class='op'>)</span>,</span>
+<span>    partisanerror_size <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span><span class='op'>(</span></span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='fl'>0</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='fl'>3</span> <span class='op'>~</span> <span class='st'>"leftlean"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;=</span> <span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"moderateleft"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"hardleft"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='op'>-</span><span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='fl'>0</span> <span class='op'>~</span> <span class='st'>"leanright"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&lt;=</span> <span class='op'>-</span><span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='op'>-</span><span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"moderateright"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='op'>-</span><span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"hardright"</span>,  <span class='co'># Added missing operator (&lt;) to compare bias with -7</span></span>
+<span>      <span class='cn'>TRUE</span> <span class='op'>~</span> <span class='cn'>NA_character_</span>  <span class='co'># Add a catch-all condition if none of the above criteria match</span></span>
+<span>    <span class='op'>)</span></span>
+<span>  <span class='op'>)</span></span>
+<span>           </span>
+<span><span class='va'>Rawpolls</span></span></code></pre>
+</div>
+<pre><code># A tibble: 9,559 × 31
+   poll_id question_id race_id  year race         location type_simple
+     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;      
+ 1   54373       87909    1455  1998 1998_Gov-G_… NY       Gov-G      
+ 2   26255       87926    1456  1998 1998_Gov-G_… OH       Gov-G      
+ 3   26026       31266    1736  1998 1998_Sen-G_… NV       Sen-G      
+ 4   26013       31253    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 5   63632      117103    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 6   26255       31495    1741  1998 1998_Sen-G_… OH       Sen-G      
+ 7   64053      117875    1966  1998 1998_House-… ID-1     House-G    
+ 8   64053      117876    1967  1998 1998_House-… ID-2     House-G    
+ 9   28268       33546    8661  1998 1998_House-… US       House-G    
+10   28267       33545    8661  1998 1998_House-… US       House-G    
+# ℹ 9,549 more rows
+# ℹ 24 more variables: type_detail &lt;chr&gt;, pollster &lt;chr&gt;,
+#   pollster_rating_id &lt;dbl&gt;, polldate &lt;chr&gt;, samplesize &lt;dbl&gt;,
+#   cand1_name &lt;chr&gt;, cand1_party &lt;chr&gt;, cand1_pct &lt;dbl&gt;,
+#   cand2_name &lt;chr&gt;, cand2_party &lt;chr&gt;, cand2_pct &lt;dbl&gt;,
+#   cand3_pct &lt;dbl&gt;, margin_poll &lt;dbl&gt;, electiondate &lt;chr&gt;,
+#   cand1_actual &lt;dbl&gt;, cand2_actual &lt;dbl&gt;, margin_actual &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Statistical bias of the poll. This is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias </span></span>
+<span>           </span>
+<span></span>
+<span></span>
+<span></span>
+<span><span class='va'>Rawpolls</span></span></code></pre>
+</div>
+<pre><code># A tibble: 9,559 × 31
+   poll_id question_id race_id  year race         location type_simple
+     &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;      
+ 1   54373       87909    1455  1998 1998_Gov-G_… NY       Gov-G      
+ 2   26255       87926    1456  1998 1998_Gov-G_… OH       Gov-G      
+ 3   26026       31266    1736  1998 1998_Sen-G_… NV       Sen-G      
+ 4   26013       31253    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 5   63632      117103    1738  1998 1998_Sen-G_… NY       Sen-G      
+ 6   26255       31495    1741  1998 1998_Sen-G_… OH       Sen-G      
+ 7   64053      117875    1966  1998 1998_House-… ID-1     House-G    
+ 8   64053      117876    1967  1998 1998_House-… ID-2     House-G    
+ 9   28268       33546    8661  1998 1998_House-… US       House-G    
+10   28267       33545    8661  1998 1998_House-… US       House-G    
+# ℹ 9,549 more rows
+# ℹ 24 more variables: type_detail &lt;chr&gt;, pollster &lt;chr&gt;,
+#   pollster_rating_id &lt;dbl&gt;, polldate &lt;chr&gt;, samplesize &lt;dbl&gt;,
+#   cand1_name &lt;chr&gt;, cand1_party &lt;chr&gt;, cand1_pct &lt;dbl&gt;,
+#   cand2_name &lt;chr&gt;, cand2_party &lt;chr&gt;, cand2_pct &lt;dbl&gt;,
+#   cand3_pct &lt;dbl&gt;, margin_poll &lt;dbl&gt;, electiondate &lt;chr&gt;,
+#   cand1_actual &lt;dbl&gt;, cand2_actual &lt;dbl&gt;, margin_actual &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>biastotal</span> <span class='op'>&lt;-</span> <span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2016</span>, <span class='fl'>2018</span>, <span class='fl'>2020</span>, <span class='fl'>2022</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>pollster</span>, <span class='va'>bias_direction</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>pollerror <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>bias</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/drop_na.html'>drop_na</a></span><span class='op'>(</span><span class='va'>pollerror</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>pollerror</span>, fill <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>pollerror</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='st'>"Democratic"</span>, <span class='st'>"Republican"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>binwidth <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"steelblue1"</span>, <span class='st'>"indianred1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Poll Error"</span>, y <span class='op'>=</span> <span class='st'>"Count of Polls"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>bias2016</span> <span class='op'>&lt;-</span> <span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>==</span> <span class='fl'>2016</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>pollster</span>, <span class='va'>bias_direction</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>pollerror <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>bias</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/drop_na.html'>drop_na</a></span><span class='op'>(</span><span class='va'>pollerror</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>pollerror</span>, fill <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>pollerror</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='st'>"Democratic"</span>, <span class='st'>"Republican"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>binwidth <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"steelblue1"</span>, <span class='st'>"indianred1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"2016"</span>, x <span class='op'>=</span> <span class='st'>"Poll Error"</span>, y <span class='op'>=</span> <span class='st'>"Count of Polls"</span><span class='op'>)</span></span>
+<span><span class='va'>bias2016</span></span></code></pre>
+</div>
+<img src="index_files/figure-html5/unnamed-chunk-2-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>bias2018</span> <span class='op'>&lt;-</span> <span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>==</span> <span class='fl'>2018</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>pollster</span>, <span class='va'>bias_direction</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span>pollerror <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>bias</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/drop_na.html'>drop_na</a></span><span class='op'>(</span><span class='va'>pollerror</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>pollerror</span>, fill <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>pollerror</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='st'>"Democratic"</span>, <span class='st'>"Republican"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes_eval.html'>after_stat</a></span><span class='op'>(</span><span class='va'>density</span><span class='op'>)</span><span class='op'>)</span>, binwidth <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"steelblue1"</span>, <span class='st'>"indianred1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>Rawpolls</span><span class='op'>$</span><span class='va'>bias</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"2018"</span>, x <span class='op'>=</span> <span class='st'>"Poll Error"</span>, y <span class='op'>=</span> <span class='st'>"Count of Polls"</span><span class='op'>)</span></span>
+<span><span class='va'>bias2018</span></span></code></pre>
+</div>
+<img src="index_files/figure-html5/unnamed-chunk-2-2.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>Rawpolls</span> <span class='op'>&lt;-</span> <span class='va'>Rawpolls</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span></span>
+<span>    bias_direction <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='fl'>0</span>, <span class='st'>"left_bias"</span>, <span class='st'>"right_bias"</span><span class='op'>)</span>,</span>
+<span>    partisanerror_size <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span><span class='op'>(</span></span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='fl'>0</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='fl'>3</span> <span class='op'>~</span> <span class='st'>"leftlean"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;=</span> <span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"moderateleft_bias"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"hardbias_left"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&gt;</span> <span class='op'>-</span><span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='fl'>0</span> <span class='op'>~</span> <span class='st'>"leanright"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&lt;=</span> <span class='op'>-</span><span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>bias</span> <span class='op'>&gt;=</span> <span class='op'>-</span><span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"moderateright_bias"</span>,</span>
+<span>      <span class='va'>bias</span> <span class='op'>&lt;</span> <span class='op'>-</span><span class='fl'>7</span> <span class='op'>~</span> <span class='st'>"hardbias_right"</span>,  <span class='co'># Added missing operator (&lt;) to compare bias with -7</span></span>
+<span>      <span class='cn'>TRUE</span> <span class='op'>~</span> <span class='cn'>NA_character_</span>  <span class='co'># Add a catch-all condition if none of the above criteria match</span></span>
+<span>    <span class='op'>)</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>Rawpolls</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>bias</span>, <span class='va'>partisanerror_size</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 9,559 × 2
+     bias partisanerror_size
+    &lt;dbl&gt; &lt;chr&gt;             
+ 1  -9.85 hardbias_right    
+ 2  -9.64 hardbias_right    
+ 3   4.9  moderateleft_bias 
+ 4 -18.5  hardbias_right    
+ 5  -6.54 moderateright_bias
+ 6 -15.1  hardbias_right    
+ 7  12.5  hardbias_left     
+ 8  13.8  hardbias_left     
+ 9   3.12 moderateleft_bias 
+10   4.12 moderateleft_bias 
+# ℹ 9,549 more rows</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>mediabias</span></span></code></pre>
+</div>
+<pre><code># A tibble: 453 × 23
+   Pollster   `Pollster Rating ID` `# of Polls` `NCPP / AAPOR / Roper`
+   &lt;chr&gt;                     &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;                 
+ 1 Monmouth …                  215          108 yes                   
+ 2 Selzer &amp; …                  304           48 yes                   
+ 3 ABC News/…                    3           73 yes                   
+ 4 Siena Col…                  448           59 yes                   
+ 5 Field Res…                   94           25 yes                   
+ 6 Marquette…                  195           12 yes                   
+ 7 Muhlenber…                  219           29 yes                   
+ 8 Marist Co…                  183          183 yes                   
+ 9 Data Orbi…                   73            9 yes                   
+10 National …                  224           12 yes                   
+# ℹ 443 more rows
+# ℹ 19 more variables: `Live Caller With Cellphones` &lt;chr&gt;,
+#   Methodology &lt;chr&gt;, `Banned by 538` &lt;chr&gt;,
+#   `Predictive    Plus-Minus` &lt;dbl&gt;, `538 Grade` &lt;chr&gt;,
+#   `Mean-Reverted Bias` &lt;chr&gt;, `Races Called Correctly` &lt;chr&gt;,
+#   `Misses Outside MOE` &lt;chr&gt;, `Simple Average Error` &lt;dbl&gt;,
+#   `Simple Expected Error` &lt;dbl&gt;, `Simple Plus-Minus` &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>##finance &lt;- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")</span></span>
+<span><span class='co'>#finance</span></span></code></pre>
+</div>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
