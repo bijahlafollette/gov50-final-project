@@ -11,6 +11,8 @@ s
 
 ##I Project thoughts
 
+Question: Are polls actually biased in favor of democrats? Can we define causility?
+
 I am interested in exploring data related to the midterm elections of 2020, 2018, and 2016 elections to try and see what the accuracy of the elections was based on different polling organizations, the way the interview was conducted and I also want to evaluate whether or not incumbency matters. 538 offers analysis of all the major polling organizations and whether or not they have done an unbiased job in their analysis, which is stored in the mediabias dataset. 
     I hypthesize that the data will be most accurate in terms of predicting a winner for incumbents. I also predict that polling firms with higher grades from 538 will be more accurate and that partisan polling firmns willk be more accurate. 
     My outcome variable, or tbhe variable on ym y axis will be the error column. If the absolte values are higher, that means that the polls prediction is farer away from the actual outcome and the opposite is true for lower values. 
@@ -23,34 +25,35 @@ library(housing)
 
 library
 ```{r}
+library(ggplot2)
+library(infer)
+library(dplyr)
 library(tidyverse)
 Rawpolls <- read_csv("raw-polls.csv")
 mediabias <- read_csv("pollster-ratings.csv")
 
-Rawpolls
+mean(Rawpolls$samplesize)
+
+Rawpolls <- Rawpolls
+
 Rawpolls |>
   filter(year == 2016|year ==2018|year == 2020|year == 2022) |>
   group_by(pollster, location) |>
   summarise(pollerror = mean(error))
   
+Rawpolls
+names(mediabias)
 mediabias
 
-finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
 
          
 
 
 
 ```
-
+##MUTATIONS
 ```{r}
-library(ggplot2)
-library(infer)
-library(tidyverse)
-Rawpolls <- read_csv("raw-polls.csv")
-mediabias <- read_csv("pollster-ratings.csv")
-
- Rawpolls <- Rawpolls |>
+Rawpolls <- Rawpolls |>
     mutate(bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
     partisanerror_size = case_when(
       bias > 0 & bias < 3 ~ "leftlean",
@@ -61,8 +64,192 @@ mediabias <- read_csv("pollster-ratings.csv")
       bias < -7 ~ "hardright",  # Added missing operator (<) to compare bias with -7
       TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
     )
-  )
-           
+    )
+
+    Rawpolls <- Rawpolls |>
+  mutate(
+    bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
+    partisanerror_size = case_when(
+      bias > 0 & bias < 3 ~ "leftlean",
+      bias >= 3 & bias <= 7 ~ "moderateleft_bias",
+      bias > 7 ~ "hardbias_left",
+      bias > -3 & bias < 0 ~ "leanright",
+      bias <= -3 & bias >= -7 ~ "moderateright_bias",
+      bias < -7 ~ "hardbias_right",  # Added missing operator (<) to compare bias with -7
+      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
+    )
+  ) 
+    
+      Rawpolls <- Rawpolls |>
+      mutate(swingstate = if_else(margin_poll < 6 & margin_poll > -6, "swingrace", "blowout"),
+             sampletype = case_when(samplesize < 500 ~ "smallsample",
+                                    samplesize >= 500 & samplesize <= 750 ~ "mediumsample",
+                                    samplesize > 750 ~ "Large_sample"))
+  
+     
+   
+     
+```
+
+
+
+
+##sample size box plot
+
+prop = count / nrow(rawpolls))
+```{r}
+
+Rawpolls
+library(knitr)
+ Rawpolls |>
+  group_by(sampletype) |>
+  summarize(n = n()) |>
+  mutate(proportion = n / sum(n)) |>
+  select(sampletype, proportion) |>
+  knitr::kable(col.names = c("Sample Type", "Proportion of total"), digits = 3)
+
+
+Rawpolls |>
+  group_by(sampletype) |>
+  summarize(avg.error = mean(error)) |>
+  pivot_wider(names_from = sampletype, values_from = avg.error)  |>
+  mutate(ATE = Large_sample - smallsample) |>
+  select(c(Large_sample, smallsample, ATE)) |>
+  knitr::kable(col.names = c("Large Sample", "Small Sample", "ATE"), digits = 3)
+
+##partisan nature of the error
+Rawpolls |>
+  drop_na(bias) |>
+  group_by(sampletype) |>
+  summarize(bias = mean(bias)) |>
+  pivot_wider(names_from = sampletype, values_from = bias)  |>
+  mutate(ATE = Large_sample - smallsample) |>
+  select(c(Large_sample, smallsample, ATE)) |>
+  knitr::kable(col.names = c("Large Sample", "Small Sample", "ATE"), digits = 3)
+
+
+Rawpolls |>
+  drop_na(bias) |>
+  summarize(biasmean = mean(bias))
+
+ 
+```
+Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was definsed as those samples where the sample size was greater than 850 (75th percentile). 
+
+As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statisticallty signigant or just do to random chance I will run a p value test
+
+#is the number above statistically signifigant.
+##P value test
+```{r}
+
+
+Rawpolls
+ate1 <- Rawpolls |>
+  filter(sampletype %in% c("Large_sample", "smallsample")) |>
+  specify(error ~ sampletype) |>
+  calculate(stat = "diff in means", order = c("Large_sample", "smallsample"))
+ate1
+  
+ate_rawpolls_dust <- Rawpolls |>
+  filter(sampletype %in% c("Large_sample", "smallsample")) |>
+  specify(error ~ sampletype) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means", order = c("Large_sample", "smallsample"))
+
+ate_rawpolls_dust |> visualize() +
+  shade_p_value(obs_stat = ate1, direction = "both") 
+
+ate1_pvalue <- ate_rawpolls_dust |>
+  get_p_value(obs_stat = ate_rawpolls_dust, direction = "both")
+ate1_pvalue
+  
+
+
+```
+The pvalue is zero. this means that there is close to a zero chance that if the null was true (that there was no relationship between large and small sample sizes on polling error) we would observe larger polls being, on average, 2.7 points less innacurate. 
+As a result, we can conclude that polls with a large sample size are more accurate.
+
+
+
+
+
+
+```{r}
+Rawpolls
+```
+
+
+
+
+
+##sample size visualization
+
+```{r}
+  Rawpolls |>
+      filter(samplesize < 5000) |>
+     ggplot(Rawpolls, mapping = aes(x = samplesize)) +
+       geom_histogram()
+
+Rawpolls
+Rawpolls |>
+  group_by(sampletype) |>
+  summarize(avg.error = mean(error)) |>
+ # pivot_wider(names_from = sampletype, values_from = avg.error) |>
+  ggplot(mapping = aes(x = sampletype, y = avg.error, fill = sampletype)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = .7, width = .7) +
+  scale_fill_manual(values = c("smallsample" = "skyblue", 
+                                "mediumsample" = "orange",
+                                "Large_sample" = "green"))
+
+recent.electionerror <- Rawpolls |>
+  filter(year %in% c(2016, 2018, 2022)) |>
+  group_by(sampletype) |>
+  summarize(avg.error = mean(error, na.rm = TRUE)) |>
+  ggplot(mapping = aes(x = sampletype, y = avg.error, fill = sampletype)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = .7, width = .7) +
+  scale_fill_manual(values = c("smallsample" = "skyblue", 
+                                "mediumsample" = "orange",
+                                "Large_sample" = "green"))
+recent.electionerror
+
+#Regression of sample size on polling error
+
+Regression_samplesize <- Rawpolls |>
+  ggplot(mapping = aes(x = samplesize, y = error)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_
+Regression_samplesize
+
+Rawpolls |>
+  filter(samplesize < 5000) |>
+  ggplot(mapping = aes(x = samplesize, y = error)) +
+  geom_point() +  # Scatterplot of samplesize vs. error
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  scale_x_log10() 
+
+
+  
+
+
+
+
+Rawpolls |> filter(year == 2020)
+
+```
+As we can see, average error is larger for small sample sizes as opposed to larger ones 
+
+
+```{r}
+
+
+
+```
+
+
+```{r}
+  
 Rawpolls
 # Statistical bias of the poll. This is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias 
            
@@ -74,12 +261,13 @@ Rawpolls
 biastotal <- Rawpolls |>
   filter(year %in% c(2016, 2018, 2020, 2022)) %>%
   group_by(pollster, bias_direction) %>%
-  summarize(pollerror = mean(bias)) %>%
+  summarize(pollerror = mean(bias)) %>% 
   drop_na(pollerror) %>%
   ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
   geom_histogram(binwidth = 1) +
   scale_fill_manual(values = c("steelblue1", "indianred1")) +
   labs(x = "Poll Error", y = "Count of Polls")
+biastotal
 
 bias2016 <- Rawpolls |>
   filter(year == 2016) |>
@@ -106,27 +294,82 @@ bias2018
   
 
 
-Rawpolls <- Rawpolls %>%
-  mutate(
-    bias_direction = if_else(bias >= 0, "left_bias", "right_bias"),
-    partisanerror_size = case_when(
-      bias > 0 & bias < 3 ~ "leftlean",
-      bias >= 3 & bias <= 7 ~ "moderateleft_bias",
-      bias > 7 ~ "hardbias_left",
-      bias > -3 & bias < 0 ~ "leanright",
-      bias <= -3 & bias >= -7 ~ "moderateright_bias",
-      bias < -7 ~ "hardbias_right",  # Added missing operator (<) to compare bias with -7
-      TRUE ~ NA_character_  # Add a catch-all condition if none of the above criteria match
-    )
-  )
 
-Rawpolls |>
-  select(bias, partisanerror_size)
-  
-mediabias
+
+
 
 ##finance <- read_csv("BVP-Nasdaq-Emerging-Cloud-Index (2).csv")
 #finance
+ quantile(Rawpolls$samplesize, probs = 0.25)
+ quantile(Rawpolls$samplesize, probs = 0.75)
+
+```
+
+
+#sample size error analkysis
+```{r}
+Rawpolls |>
+  group_by(sampletype, swingstate) |>
+  summarize(avgerror = mean(error)) |>
+  pivot_wider(names_from = sampletype, values_from = avgerror)
+
+
+  
+  
+  
+Rawpolls |>
+  filter(samplesize < 5000) |>
+  ggplot(mapping = aes(x = samplesize, y = pollerror)
+
+
+```
+
+
+```{r}
+unique_pollsters <- unique(mediabias$Pollster)
+num_unique_pollsters <- length(unique_pollsters)
+
+unique_pollsters <- unique(mediabias$Pollster)
+num_unique_pollsters <- length(unique_pollsters)
+```
+
+
+#Methodology analysis
+```{r}
+length(mediabias$Pollster)
+
+#  mediabias |>
+ #   group_by(Methodology) |>
+ #   summarize(avg.error = mean(`Simple Average Error`),
+ #   sd.error = sd(`Simple Average Error`)) |>
+ #   mutate(diff = avg.error - mean(mediabias$`Simple Average Error`)) +
+  #  ggplot(mapping = aes(x = Methodology, y = avg.error)) +
+#  geom_barplot()
+  
+mediabias |>
+  filter()
+
+mediabias_summary <- mediabias %>%
+  group_by(Methodology) %>%
+  summarize(avg.error = mean(`Simple Average Error`),
+            sd.error = sd(`Simple Average Error`),
+            diff = avg.error - mean(`Simple Average Error`))
+
+mediabias_summary
+  ggplot(mediabias_summary, aes(x = Methodology, y = avg.error)) +
+    geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7) +
+    geom_errorbar(aes(ymin = avg.error - sd.error, ymax = avg.error + sd.error),
+                  width = 0.3, position = position_dodge(0.9)) +
+    labs(x = "Methodology", y = "Average Error", title = "Average Error by Methodology") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  mediabias |>
+    filter(Methodology == "Landline")
+  
+unique(mediabias$Methodology)  
+    
+    
 
 ```
 
