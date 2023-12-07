@@ -45,12 +45,32 @@ Rawpolls
 names(mediabias)
 mediabias
 
+Rawpolls
 
-         
+unique_pollsters <- unique(mediabias$Pollster)
+unique_mediabias <- unique(Rawpolls$pollster)
+
+
+unique_pollsters <
+unique_mediabias
+
+# Assuming both datasets have a column named 'Pollster'
+common_pollsters <- intersect(mediabias$Pollster, Rawpolls$pollster)
+
+if (length(common_pollsters) > 0) {
+  print("Common pollsters found:")
+  print(common_pollsters)
+} else {
+  print("No common pollsters found.")
+}
 
 
 
 ```
+
+
+
+
 ##MUTATIONS
 ```{r}
 Rawpolls <- Rawpolls |>
@@ -109,7 +129,7 @@ library(knitr)
   knitr::kable(col.names = c("Sample Type", "Proportion of total"), digits = 3)
 
 
-Rawpolls |>
+samples.error <- Rawpolls |>
   group_by(sampletype) |>
   summarize(avg.error = mean(error)) |>
   pivot_wider(names_from = sampletype, values_from = avg.error)  |>
@@ -132,11 +152,12 @@ Rawpolls |>
   drop_na(bias) |>
   summarize(biasmean = mean(bias))
 
+mediabias
  
 ```
 Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was definsed as those samples where the sample size was greater than 850 (75th percentile). 
 
-As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statisticallty signigant or just do to random chance I will run a p value test
+As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statistically signifigant or just do to random chance I will run a p value test
 
 #is the number above statistically signifigant.
 ##P value test
@@ -164,7 +185,7 @@ ate1_pvalue <- ate_rawpolls_dust |>
   get_p_value(obs_stat = ate_rawpolls_dust, direction = "both")
 ate1_pvalue
   
-
+mediabias
 
 ```
 The pvalue is zero. this means that there is close to a zero chance that if the null was true (that there was no relationship between large and small sample sizes on polling error) we would observe larger polls being, on average, 2.7 points less innacurate. 
@@ -292,7 +313,18 @@ bias2018 <- Rawpolls |>
   labs(title = "2018", x = "Poll Error", y = "Count of Polls")
 bias2018
   
-
+bias_swingstate <- Rawpolls |>
+  filter(year == c(2016, 2018, 2020),
+         location == "PA") |>
+  group_by(pollster, bias_direction) %>%
+  summarize(pollerror = mean(bias)) %>%
+  drop_na(pollerror) %>%
+  ggplot(mapping = aes(x = pollerror, fill = ifelse(pollerror > 0, "Democratic", "Republican"))) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 1) +
+  scale_fill_manual(values = c("steelblue1", "indianred1")) +
+  geom_vline(xintercept = mean(Rawpolls$bias)) +
+  labs(title = "2018", x = "Poll Error", y = "Count of Polls")
+bias_swingstate
 
 
 
@@ -356,7 +388,7 @@ mediabias_summary <- mediabias %>%
             diff = avg.error - mean(`Simple Average Error`))
 
 mediabias_summary
-  ggplot(mediabias_summary, aes(x = Methodology, y = avg.error)) +
+  mediabias.plot <- ggplot(mediabias_summary, aes(x = Methodology, y = avg.error)) +
     geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7) +
     geom_errorbar(aes(ymin = avg.error - sd.error, ymax = avg.error + sd.error),
                   width = 0.3, position = position_dodge(0.9)) +
@@ -371,6 +403,14 @@ unique(mediabias$Methodology)
     
     
 
+```
+```{r}
+
+mediabias %>%
+  drop_na(Bias) %>%
+  mutate(`Simple Average Error` = as.numeric(`Simple Average Error`)) %>%
+  group_by(`Live Caller With Cellphones`) %>%
+  summarize(x = mean(`Simple Average Error`, na.rm = TRUE))
 ```
 
 

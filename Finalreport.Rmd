@@ -1,0 +1,146 @@
+---
+title: "FinalReport"
+author: "Bijah LaFollette"
+date: "2023-12-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#INTRODUCTION:
+For my project I have decided to examine data related to elections from 1998 to 2020 to see what variables have caused polls to be inaccurate. Going into the project,I assumed that polls were, generally speaking, biased towards democrats given the inaccurate polls during the 2016 election. More broadly, as a result of the shock of the 2016 election, public confidence in polls and election predictions generally has plummeted. This has meant that some voters completely discopnect themselves from viewing political news before elections because they don't trust polls and the media. To understand why polls can be inaccurate, I looked at two main explanatory variables: sample size and the way the polls were conducted. 
+
+```{r}
+biastotal
+```
+
+As we can see, polling errors over the last 20 years are fairly evenly distrubited between democrats and republicans. But why are there errors in the first place?
+My research question: Is there a relationship between the way polls are conducted and the accuracy of the polls and how does sample size affect accuracy? My hypothesis was that polls that had larger sample sized and those that were not conducted by live phone would prove to be the most accurate. This is because of "cancellation fear" that many Trump supporters, particularly females, had in 2016 that made them afraid to admit support for candidate Trump to a live person. If I observe that polls with a larger sample size had lower mean errors, then this would support my hypothesis. If I observe that polls that were conducted by Interactive Voice Response (IVR) (an automated telephone system where a person speaks to a robot who recitates pre-recorded messages or texts-to-speech) polls were more accurate than live or mail polls, this would also support my hypothesis. 
+
+This study will be informative for the purposes of identifying what types of polls are most accurate and if large sample sizes are actually necessary. Polls with large sample sizes can be more expensive to conduct; If we cannot prove that larger sample sizes increase accuracy then we can show polling organizations that they are not necessary. 
+
+##Data and Research Method
+
+I analyze data from elections from 1998-2020, which includes data from congressional and federal elections. I gained this data from 538's database on elections. My data comes from two different datasets -- one that focuses on different election results / poll error /  and another that focuses on the methodologies of the pollster. The datasets include variables such as year, race, location, sample size, the margin predicted by the polls and the actual margin in the election. The 'error' column is the " Absolute value of the difference between the actual and polled result. This is calculated as `abs(margin_poll - margin_actual)
+"`bias` is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias (the Democrat did better in the poll than the election). Negative values indicate a Republican bias." 
+
+
+#Data and Research Method
+The first data anslysis topic I covered was comparing errors for polls with a small sample size and polls with a large sample size. Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was defined as those samples where the sample size was greater than 850 (75th percentile). 
+
+```{r}
+samples.error <- Rawpolls |>
+  group_by(sampletype) |>
+  summarize(avg.error = mean(error)) |>
+  pivot_wider(names_from = sampletype, values_from = avg.error)  |>
+  mutate(ATE = Large_sample - smallsample) |>
+  select(c(Large_sample, smallsample, ATE)) |>
+  knitr::kable(col.names = c("Large Sample", "Small Sample", "ATE"), digits = 3)
+samples.error
+```
+
+In this first plot, we can see that polls with a large sample size averaged a 4.7 error while polls with a small sample size averaged a 7.409 error. This means that large sample size polls were 2.7 points more accurate. As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statistically significant or just do to random chance I ran a p value test under the null hypothesis that there should be no difference in polling error for small vs large sample sizes. 
+
+```{r}
+
+Rawpolls
+ate1 <- Rawpolls |>
+  filter(sampletype %in% c("Large_sample", "smallsample")) |>
+  specify(error ~ sampletype) |>
+  calculate(stat = "diff in means", order = c("Large_sample", "smallsample"))
+ate1
+  
+ate_rawpolls_dust <- Rawpolls |>
+  filter(sampletype %in% c("Large_sample", "smallsample")) |>
+  specify(error ~ sampletype) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means", order = c("Large_sample", "smallsample"))
+
+ate_rawpolls_dust |> visualize() +
+  shade_p_value(obs_stat = ate1, direction = "both") 
+
+ate1_pvalue <- ate_rawpolls_dust |>
+  get_p_value(obs_stat = ate_rawpolls_dust, direction = "both")
+ate1_pvalue
+  
+```
+
+This shows that under the null hypothesis where the sample size has no effect on polling error, the chance that we would observe a result where large sample sizes were 2.7 points more accurate is, highly, unlikely. The P value is 0, and it does not even fall on the distribution of possible outcomes. In fact, based on the distributon above, it is only likely that we could observe a difference of 0.5 on either direction. 
+
+As a result, we can reject the null hypothesis. this means that the 2.7 ATE calculated above is statistically signifgant. Further evidence of sample sizes effect on poll accuracy comes from a regression I did later. 
+
+#RESULTS
+
+```{r}
+Rawpolls |>
+  filter(samplesize < 5000) |>
+  ggplot(mapping = aes(x = samplesize, y = error)) +
+  geom_point() +  # Scatterplot of samplesize vs. error
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  scale_x_log10() 
+
+Rawpolls |>
+  filter(samplesize > 1000)
+
+
+```
+
+This visualization shows that the optimal number of particpants is around 750. After that, there are decreasing returns to increasing poll sample size, as the slope of the line begins to flatten. Past a 1,000 poll sample size (which is 16.4% % of polls in the data), there is very little improvement in reducing poll error. This suggests that extremely large polls can be a waste of time and resources and should be discontinued for future elections. Instead new ideas about how to improve polling could be better focused by thinking about how polls are conducted. 
+
+Moving on to my discussion of the way in which the polls were conducted, the following graph summarizes mean errors for 17 different polling methods. The graph also contains error bars which, at the bottom, represent the average error - a standard deviation and the top bar which represents the average error plus a standard deviation. This gives viewers a sense of how spread out the errors were for each polling method. 
+
+```{r}
+
+mediabias_summary <- mediabias %>%
+  group_by(Methodology) %>%
+  summarize(avg.error = mean(`Simple Average Error`),
+            sd.error = sd(`Simple Average Error`),
+            diff = avg.error - mean(`Simple Average Error`))
+
+  mediabias.plot <- ggplot(mediabias_summary, aes(x = Methodology, y = avg.error)) +
+    geom_bar(stat = "identity", fill = "skyblue", alpha = 0.7) +
+    geom_errorbar(aes(ymin = avg.error - sd.error, ymax = avg.error + sd.error),
+                  width = 0.3, position = position_dodge(0.9)) +
+    labs(x = "Methodology", y = "Average Error", title = "Average Error by Methodology") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+##Multi regression
+```{r}
+mediabias
+model <- lm(data = mediabias, `Simple Average Error` ~ `Methodology`)
+model
+
+
+
+```
+
+#CONCLUSION
+In conclusion, the data shows that polls, historically, do not necessarily benefit one party systemically more than the other. 
