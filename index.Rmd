@@ -153,7 +153,7 @@ knitr::kable(ate1_pvalue, digits = 3, col.names = c("pvalue"))
 
 This shows that under the null hypothesis where the sample size has no effect on polling error, the chance that we would observe a result where large sample sizes were 2.7 points more accurate is, highly, unlikely. The P value is 0, and it does not even fall on the distribution of possible outcomes. In fact, based on the distributon above, it is only likely that we could observe a difference of 0.5 on either direction. 
 
-As a result, we can reject the null hypothesis. this means that the -2.7 ATE calculated above is statistically signifigant Further evidence of sample sizes effect on poll accuracy comes from a regression I did later. 
+As a result, we can reject the null hypothesis. This means that the -2.7 ATE calculated above is statistically signifigant Further evidence of sample sizes effect on poll accuracy comes from a regression I did later. 
 
 # RESULTS
 
@@ -172,7 +172,7 @@ Rawpolls |>
 
 ```
 
-This visualization shows that the optimal number of particpants is around 750. After that, there are decreasing returns to increasing poll sample size, as the slope of the line begins to flatten. Past a 1,000 poll sample size (which is 16.4% % of polls in the data), there is very little improvement in reducing poll error. This suggests that extremely large polls can be a waste of time and resources and should be discontinued for future elections. Instead new ideas about how to improve polling could be better focused by thinking about how polls are conducted. 
+This visualization shows that the optimal number of participants is around 750. After that, there are decreasing returns to increasing poll sample size, as the slope of the line begins to flatten. Past a 1,000 poll sample size (which is 16.4% of polls in the data), there is very little improvement in reducing poll error. This suggests that extremely large polls can be a waste of time and resources and should be discontinued for future elections. Instead new ideas about how to improve polling could be better focused by thinking about how polls are conducted. 
 
 
 Moving on to my discussion of the way in which the polls were conducted, the following graph summarizes mean errors for 17 different polling methods. The graph also contains error bars which, at the bottom, represent the average error - a standard deviation and the top bar which represents the average error plus a standard deviation. This gives viewers a sense of how spread out the errors were for each polling method. 
@@ -204,11 +204,11 @@ mediabias_summary <- mediabias |>
 ```
 
 
-This visualization may confirm my hypothesis that polling that is live over a telephone is less accurate than online polling (where supporters don't have to fear repercussions over unpopular political opinions). The Methodoloy with the largest average error and the largest spread of the errors is the Landline method, where a representative from a polling company calls samplants using traditional landline telephones. Further, pollsters that used landline methodology had much higher misses outside margin of error, predicted fewer races accurately and, on average, their polls were very biased in favor of democrats. This suggests that conservative voters may have been shy about voicing their true opinions over the phone. 
+This visualization may confirm my hypothesis that polling that is live over a telephone is less accurate than online polling (where supporters don't have to fear repercussions over unpopular political opinions). The Methodology with the largest average error and the largest spread of the errors is the Landline method, where a representative from a polling company calls samplants using traditional landline telephones. Further, pollsters that used landline methodology had much higher misses outside margin of error, predicted fewer races accurately and, on average, their polls were very biased in favor of democrats. This suggests that conservative voters may have been shy about voicing their true opinions over the phone. 
 
 However, it is important to note that only 6 pollsters (out of 453) in the mediabias dataset used Landline methodology, representing only 1.3% of the pollsters. Further, other methods that involved live interaction between humans such as live and live* did not experience such unusually high and spread out errors. Further,  many more pollsters in this dataset used live and live than landline,* meaning that the sample size is sufficient to make a judgement.
 
-Different IVR polling methods (automated polling methods) had average errors that were generally distributed around 5.5 average error. From this, it is difficult to make a firm conclusion about which polling methods will best minimize error. In order to better understand which Methodoligies minimized erros, I did a multi-variable regression; grouping the methodologies by 6 categories: live, IVR, text, online, landline, and mail. 
+Different IVR polling methods (automated polling methods) had average errors that were generally distributed around 5.5. From this, it is difficult to make a firm conclusion about which polling methods will best minimize error. In order to better understand which Methodoligies minimized erros, I did a multi-variable regression; grouping the methodologies by 6 categories: live, IVR, text, online, landline, and mail. 
    
 
 ```{r}
@@ -243,18 +243,6 @@ This regression shows that when the polling is live, errors go down by -.343 on 
   This study could have been improved if perhaps we also had polling data from other countries with two major political parties, such as Canada and the United Kingdom. This could have assisted in my analysis of identifying which polling methodoligies were most accurate. 
   
   
-```{r}
-recent.electionerror <- Rawpolls |>
-  filter(year %in% c(2016, 2018, 2022)) |>
-  group_by(sampletype) |>
-  summarize(avg.error = mean(error, na.rm = TRUE)) |>
-  ggplot(mapping = aes(x = sampletype, y = avg.error, fill = sampletype)) +
-  geom_bar(stat = "identity", position = "dodge", alpha = .7, width = .7) +
-  scale_fill_manual(values = c("smallsample" = "skyblue", 
-                                "mediumsample" = "orange",
-                                "Large_sample" = "green"))
-recent.electionerror
-```
   
   
 
