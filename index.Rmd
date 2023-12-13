@@ -143,7 +143,12 @@ ate_rawpolls_dust |> visualize() +
 
 ate1_pvalue <- ate_rawpolls_dust |>
   get_p_value(obs_stat = ate_rawpolls_dust, direction = "both")
+
+get_p_value(ate_rawpolls_dust, obs_stat = ate1, direction = "both")
+
 ate1_pvalue
+#knittr::kable(ate_rawpolls_dust, obs_stat = ate1, direction = "both")
+
   
 ```
 
