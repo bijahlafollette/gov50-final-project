@@ -87,6 +87,7 @@ biastotal <- Rawpolls |>
 biastotal
 
 
+
 ```
 
 As we can see, polling errors over the last 20 years are fairly evenly distrubited between Democrats and Republicans. But why are there errors in the first place?

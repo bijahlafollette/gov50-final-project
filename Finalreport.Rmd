@@ -363,7 +363,6 @@ unique_pollsters <- unique(mediabias$Pollster)
 num_unique_pollsters <- length(unique_pollsters)
 ```
 
-
 #Methodology analysis
 ```{r}
 length(mediabias$Pollster)
@@ -402,6 +401,9 @@ unique(mediabias$Methodology)
     
 
 ```
+
+
+
 ```{r}
 
 mediabias %>%
@@ -409,3 +411,48 @@ mediabias %>%
   mutate(`Simple Average Error` = as.numeric(`Simple Average Error`)) %>%
   group_by(`Live Caller With Cellphones`) %>%
   summarize(x = mean(`Simple Average Error`, na.rm = TRUE))
+```
+
+
+##Many regression attemps with Rawpolls
+
+```{r}
+
+Rawpolls <- Rawpolls %>%
+  mutate(numerical.sample = case_when(
+    sampletype == "smallsample" ~ 0,
+    sampletype == "Large_sample" ~ 1,
+    TRUE ~ NA_integer_  # Optional: To handle other cases or assign NA if needed
+  ))
+
+Rawpolls <- Rawpolls |>
+  mutate(numerical.racetype = case_when(swingstate == "swingrace" ~ 1,
+                                             swingstate == "blowout" ~ 0))
+
+
+multi.regression <- Rawpolls  |>
+  filter(sampletype %in% c("smallsample", "Large_sample"),
+         location %in% c("FL", "PA", "OH", "MI", "WI", "NC", "AZ", "GA", "IA", "NV"))
+
+multi.regression
+
+
+model <- lm(error ~ numerical.sample + numerical.racetype + location, data = multi.regression)
+model
+
+#other idea from TF
+model2 <- lm(error ~ samplesize, data = Rawpolls)
+```
+
+
+##Regression attempts with Mediabias
+```{r}
+
+mediabias |>
+  select(Methodology)
+model1 <- lm(`Simple Average Error` ~ Methodology, data = mediabias)
+model1
+
+```
+```
+
