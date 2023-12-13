@@ -233,6 +233,21 @@ This regression shows that when the polling is live, errors go down by -.343 on 
   In conclusion, the data shows that polls have not been overwhelmingly biased toward one party over the other. It does show that polls with a sample size that is around 850 (the 75th percentile of sample size) tend to be 2.7pts more accurate than polls with a smaller sample size below 500 (25th percentile of sample size). The regression suggests that there may be diminishing returns to reducing poll error as sample size increases. While there was some evidence to support my thesis that polling methodologies that included human-to-human contact induced more polling errors, there were many limitations to this aspect of the study, such as sufficient sampling. Another limitation to the mediabias dataset was that, FiveThirtyEight (source of data), did not define what many of the polling methodologies were in the readme file. I was able to google many of definitions on the internet, but different polling organizations sometimes define different specific methodologies differently. As a result, I was limited in my ability to identify the polling methodology that limited errors. 
   This study could have been improved if perhaps we also had polling data from other countries with two major political parties, such as Canada and the United Kingdom. This could have assisted in my analysis of identifying which polling methodoligies were most accurate. 
   
+  
+```{r}
+recent.electionerror <- Rawpolls |>
+  filter(year %in% c(2016, 2018, 2022)) |>
+  group_by(sampletype) |>
+  summarize(avg.error = mean(error, na.rm = TRUE)) |>
+  ggplot(mapping = aes(x = sampletype, y = avg.error, fill = sampletype)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = .7, width = .7) +
+  scale_fill_manual(values = c("smallsample" = "skyblue", 
+                                "mediumsample" = "orange",
+                                "Large_sample" = "green"))
+recent.electionerror
+```
+  
+  
 
 ```
 
