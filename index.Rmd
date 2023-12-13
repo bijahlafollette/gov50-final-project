@@ -31,7 +31,7 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-#INTRODUCTION:
+# INTRODUCTION:
 For my project I have decided to examine data related to elections from 1998 to 2020 to see what variables have caused polls to be inaccurate. Going into the project,I assumed that polls were, generally speaking, biased towards democrats given the inaccurate polls during the 2016 election. More broadly, as a result of the shock of the 2016 election, public confidence in polls and election predictions generally has plummeted. This has meant that some voters completely discopnect themselves from viewing political news before elections because they don't trust polls and the media. To understand why polls can be inaccurate, I looked at two main explanatory variables: sample size and the way the polls were conducted. 
 
 ```{r}
@@ -95,13 +95,13 @@ My research question: Is there a relationship between the way polls are conducte
 
 This study will be informative for the purposes of identifying what types of polls are most accurate and if large sample sizes are actually necessary. Polls with large sample sizes can be more expensive to conduct; If we cannot prove that larger sample sizes increase accuracy then we can show polling organizations that they are not necessary. 
 
-##Data and Research Method
+# Data and Research Method
 
 I analyze data from elections from 1998-2020, which includes data from congressional and federal elections. I gained this data from 538's database on elections. My data comes from two different datasets -- one that focuses on different election results / poll error /  and another that focuses on the methodologies of the pollster. The datasets include variables such as year, race, location, sample size, the margin predicted by the polls and the actual margin in the election. The 'error' column is the "Absolute value of the difference between the actual and polled result. This is calculated as `abs(margin_poll - margin_actual)
 "`bias` is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias (the Democrat did better in the poll than the election). Negative values indicate a Republican bias." 
 
 
-#Data and Research Method
+### Data and Research Method Continued
 The first data anslysis topic I covered was comparing errors for polls with a small sample size and polls with a large sample size. Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was defined as those samples where the sample size was greater than 850 (75th percentile). 
 
 ```{r}
@@ -148,7 +148,7 @@ This shows that under the null hypothesis where the sample size has no effect on
 
 As a result, we can reject the null hypothesis. this means that the -2.7 ATE calculated above is statistically signifigant Further evidence of sample sizes effect on poll accuracy comes from a regression I did later. 
 
-#RESULTS
+# RESULTS
 
 ```{r}
 Rawpolls |>
