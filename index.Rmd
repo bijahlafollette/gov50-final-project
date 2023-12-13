@@ -32,7 +32,7 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 # INTRODUCTION:
-For my project I have decided to examine data related to elections from 1998 to 2020 to see what variables have caused polls to be inaccurate. Going into the project,I assumed that polls were, generally speaking, biased towards democrats given the inaccurate polls during the 2016 election. More broadly, as a result of the shock of the 2016 election, public confidence in polls and election predictions generally has plummeted. This has meant that some voters completely discopnect themselves from viewing political news before elections because they don't trust polls and the media. To understand why polls can be inaccurate, I looked at two main explanatory variables: sample size and the way the polls were conducted. 
+For my project I have decided to examine data related to elections from 1998 to 2020 to see what variables have caused polls to be inaccurate. Going into the project, I assumed that polls were, generally speaking, biased towards democrats given the inaccurate polls during the 2016 election. More broadly, as a result of the shock of the 2016 election, public confidence in polls and election predictions generally has plummeted. This has meant that some voters completely disconnect themselves from viewing political news before elections because they don't trust polls and the media. To understand why polls can be inaccurate, I looked at two main explanatory variables: sample size and the way the polls were conducted. 
 
 ```{r}
 library(infer)
@@ -86,25 +86,30 @@ biastotal <- Rawpolls |>
   labs(x = "Direction of Poll bias", y = "Count of Polls")
 biastotal
 
- quantile(Rawpolls$samplesize, probs = 0.25)
- quantile(Rawpolls$samplesize, probs = 0.75)
+
 ```
 
-As we can see, polling errors over the last 20 years are fairly evenly distrubited between democrats and republicans. But why are there errors in the first place?
-My research question: Is there a relationship between the way polls are conducted and the accuracy of the polls and how does sample size affect accuracy? My hypothesis was that polls that had larger sample sized and those that were not conducted by live phone would prove to be the most accurate. This is because of "cancellation fear" that many Trump supporters, particularly females, had in 2016 that made them afraid to admit support for candidate Trump to a live person. If I observe that polls with a larger sample size had lower mean errors, then this would support my hypothesis. If I observe that polls that were conducted by Interactive Voice Response (IVR) (an automated telephone system where a person speaks to a robot who recitates pre-recorded messages or texts-to-speech) polls were more accurate than live or mail polls, this would also support my hypothesis. 
+As we can see, polling errors over the last 20 years are fairly evenly distrubited between Democrats and Republicans. But why are there errors in the first place?
+My research question: Is there a relationship between the way polls are conducted and the accuracy of the polls and how does sample size affect accuracy? My hypothesis was that polls that had larger sample sizes and those that were not conducted by live phone would prove to be the most accurate. This is because of 'cancellation fear' that many Trump supporters, particularly females, had in 2016 that made them afraid to admit support for candidate Trump to a live person. 
+
+If I observe that polls with a larger sample size had lower mean errors, then this would support my hypothesis. If I observe that polls that were conducted by Interactive Voice Response (IVR) (an automated telephone system where a person speaks to a robot who recitates pre-recorded messages or texts-to-speech) polls were more accurate than live or mail polls, this would also support my hypothesis. Again, this is because a 'quiet' Trump supporter might feel more comfortable revealing their true opinions to a robot than a human
 
 This study will be informative for the purposes of identifying what types of polls are most accurate and if large sample sizes are actually necessary. Polls with large sample sizes can be more expensive to conduct; If we cannot prove that larger sample sizes increase accuracy then we can show polling organizations that they are not necessary. 
 
 # Data and Research Method
 
-I analyze data from elections from 1998-2020, which includes data from congressional and federal elections. I gained this data from 538's database on elections. My data comes from two different datasets -- one that focuses on different election results / poll error /  and another that focuses on the methodologies of the pollster. The datasets include variables such as year, race, location, sample size, the margin predicted by the polls and the actual margin in the election. The 'error' column is the "Absolute value of the difference between the actual and polled result. This is calculated as `abs(margin_poll - margin_actual)
+I analyze data from elections from 1998-2020, which includes data from congressional and federal elections. I gained this data from 538's database on elections. My data comes from two different datasets -- one that focuses on different election results / poll error /  and another that focuses on the methodologies of the pollster. The datasets include variables such as year, race, location, sample size, the margin predicted by the polls and the actual margin in the election. According to 538 (source of data), The 'error' column is the "Absolute value of the difference between the actual and polled result. This is calculated as `abs(margin_poll - margin_actual)
 "`bias` is calculated only for races in which the top two finishers were a Democrat and a Republican. It is calculated as `margin_poll - margin_actual`. Positive values indicate a Democratic bias (the Democrat did better in the poll than the election). Negative values indicate a Republican bias." 
 
 
 ### Data and Research Method Continued
-The first data anslysis topic I covered was comparing errors for polls with a small sample size and polls with a large sample size. Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was defined as those samples where the sample size was greater than 850 (75th percentile). 
+The first data analysis topic I covered was comparing errors for polls with a small sample size and polls with a large sample size. Small sample type is defined as those samples where the sample size was less than 500 (25th percentile of sample size) and the large_sample was defined as those samples where the sample size was greater than 850 (75th percentile). 
 
 ```{r}
+
+ quantile(Rawpolls$samplesize, probs = 0.25)
+ quantile(Rawpolls$samplesize, probs = 0.75)
+ 
 samples.error <- Rawpolls |>
   group_by(sampletype) |>
   summarize(avg.error = mean(error)) |>
@@ -115,7 +120,7 @@ samples.error <- Rawpolls |>
 samples.error
 ```
 
-In this first plot, we can see that polls with a large sample size averaged a 4.7 error while polls with a small sample size averaged a 7.409 error. This means that large sample size polls were 2.7 points more accurate. As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statistically significant or just do to random chance I ran a p value test under the null hypothesis that there should be no difference in polling error for small vs large sample sizes. 
+In this first plot, we can see that polls with a large sample size averaged a 4.7 error while polls with a small sample size averaged a 7.409 error. This means that large sample size polls were 2.7 points more accurate. As we can see the treatment effect of having a larger sample size reduced polling error by 2.7 points for this dataset. To see if this is statistically significant or just do to random chance I ran a p-value test under the null hypothesis that there should be no difference in polling error for small vs large sample sizes. 
 
 ```{r}
 
